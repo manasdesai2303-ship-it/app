@@ -1,0 +1,223 @@
+{
+  "app_name": "GoldSmith Pro ERP",
+  "personality": "6 Glass / Luxe (Dark mode) mixed with 3 Editorial Mobile (Light mode)",
+  "personality_one_liner": "A cinematic, expensive, and precise command center that balances the prestige of luxury jewelry with the ruthless efficiency of a manufacturing ERP.",
+  "color": {
+    "light": {
+      "surface": "#FAFAFA",
+      "onSurface": "#121212",
+      "surfaceSecondary": "#FFFFFF",
+      "onSurfaceSecondary": "#525252",
+      "surfaceTertiary": "#F2F2F2",
+      "onSurfaceTertiary": "#737373",
+      "surfaceInverse": "#0A0A0A",
+      "onSurfaceInverse": "#F7F7F7",
+      "brand": "#C59B27",
+      "brandPrimary": "#C59B27",
+      "onBrandPrimary": "#FFFFFF",
+      "brandSecondary": "#A6801C",
+      "onBrandSecondary": "#FFFFFF",
+      "brandTertiary": "#FDF7E6",
+      "onBrandTertiary": "#8A6B11",
+      "success": "#2D7A4D",
+      "onSuccess": "#FFFFFF",
+      "warning": "#B8860B",
+      "onWarning": "#FFFFFF",
+      "error": "#B33A3A",
+      "onError": "#FFFFFF",
+      "info": "#4A6E8C",
+      "onInfo": "#FFFFFF",
+      "border": "#E5E5E5",
+      "borderStrong": "#CCCCCC",
+      "divider": "#F0F0F0"
+    },
+    "dark": {
+      "surface": "#0A0A0A",
+      "onSurface": "#F7F7F7",
+      "surfaceSecondary": "#151515",
+      "onSurfaceSecondary": "#A3A3A3",
+      "surfaceTertiary": "#1C1C1C",
+      "onSurfaceTertiary": "#737373",
+      "surfaceInverse": "#FFFFFF",
+      "onSurfaceInverse": "#0A0A0A",
+      "brand": "#D4AF37",
+      "brandPrimary": "#D4AF37",
+      "onBrandPrimary": "#1A1500",
+      "brandSecondary": "#B8952B",
+      "onBrandSecondary": "#FFFFFF",
+      "brandTertiary": "#332A0D",
+      "onBrandTertiary": "#E6CC80",
+      "success": "#4CAF50",
+      "onSuccess": "#002B00",
+      "warning": "#FFC107",
+      "onWarning": "#332400",
+      "error": "#F44336",
+      "onError": "#330000",
+      "info": "#64B5F6",
+      "onInfo": "#001D33",
+      "border": "#262626",
+      "borderStrong": "#404040",
+      "divider": "#1F1F1F"
+    }
+  },
+  "typography": {
+    "displayFontFamily": "Cormorant Garamond",
+    "textFontFamily": "Satoshi",
+    "scale": {
+      "sm": 12,
+      "base": 14,
+      "lg": 16,
+      "xl": 20,
+      "2xl": 24,
+      "3xl": 32,
+      "4xl": 40
+    }
+  },
+  "spacing": {
+    "rule": "Generous vertical breathing room for luxury feel, balanced with tight grid alignment for dense ledger data. Never cramp rows.",
+    "xs": 4,
+    "sm": 8,
+    "md": 12,
+    "lg": 16,
+    "xl": 24,
+    "2xl": 32,
+    "3xl": 48
+  },
+  "radius_tokens": {
+    "sm": 4,
+    "md": 8,
+    "lg": 16,
+    "pill": 999
+  },
+  "shadow_tier": "1",
+  "navigation": "bottom_tabs",
+  "icon_set": "Phosphor",
+  "glassmorphism": {
+    "enabled": true,
+    "do's": [
+      "Use glass on the bottom tab bar and sticky headers to create cinematic depth over scrolling ledgers.",
+      "Use translucent tinted backgrounds under primary metrics/balances.",
+      "Use on featured order cards floating over background images."
+    ],
+    "dont's": [
+      "Do not apply glass to body content, individual ledger rows, or form fields.",
+      "Never blur dense operational data where clarity is required."
+    ]
+  },
+  "platform_libraries": {
+    "glass": {
+      "ios": "expo-glass-effect",
+      "android": "expo-blur",
+      "low_end_android_fallback": "solid surfaceSecondary"
+    },
+    "image": "expo-image",
+    "blur": "expo-blur",
+    "bottom_sheet": "@gorhom/bottom-sheet",
+    "animation": "react-native-reanimated",
+    "gesture": "react-native-gesture-handler"
+  },
+  "screens": [
+    {
+      "name": "Login",
+      "purpose": "Secure, luxurious entry point with cinematic abstract background.",
+      "states": {
+        "loading": "Spinner over glass",
+        "empty": "N/A",
+        "error": "Toast error for invalid credentials"
+      },
+      "layout": "Full-bleed abstract background image. A gradient scrim ensures contrast. Form fields (email/password) sit inside a frosted glass card or a dark elevated surface in the bottom 40%. Primary CTA is a large, wide Gold button."
+    },
+    {
+      "name": "Dashboard",
+      "purpose": "A live operational command center prioritizing primary balances and real-time metrics.",
+      "states": {
+        "loading": "Skeleton UI for metric cards",
+        "empty": "N/A",
+        "error": "Retry button over blank sections"
+      },
+      "layout": "Header with 'GoldSmith Pro' logo. Top section: Ledger-first visualization. A large hero card showing combined 'Gold Balance' in grams using Cormorant Garamond, with subtle gold noise/gradient background. Below: A 2-column grid of KPI cards (Running Orders, Today's Jobs, Monthly Revenue). Horizontal scroll for secondary balances (Silver, Diamond). Section for 'Pending Deliveries' as a succinct list."
+    },
+    {
+      "name": "Clients",
+      "purpose": "List of Wholesalers, Retailers, and Suppliers for quick access and management.",
+      "states": {
+        "loading": "List skeleton",
+        "empty": "Empty state illustration with 'Add Client' CTA",
+        "error": "Error boundary with retry"
+      },
+      "layout": "Sticky header with Search bar and segmented control (Wholesalers | Retail | Suppliers). List items feature a leading initial avatar in a gold-tinted circle, client name, and a trailing chevron. Generous padding for high-end feel."
+    },
+    {
+      "name": "Client Detail",
+      "purpose": "Comprehensive profile and ledger breakdown per client.",
+      "states": {
+        "loading": "Skeleton for tab contents",
+        "empty": "Empty state for no transactions/orders",
+        "error": "Error boundary"
+      },
+      "layout": "Cover banner (gradient or subtle pattern). Sticky profile header with name and primary actions (Call, Email). Below is a scrollable horizontal tab bar (Dashboard, Orders, Gold Ledger, Silver Ledger, Cash Ledger, Invoices). The Gold Ledger tab shows karat breakdown (9K-24K) with gross/net/fine calculations in clean, monospaced-aligned rows. Uses divider tokens between rows."
+    },
+    {
+      "name": "Orders",
+      "purpose": "Filterable list of all manufacturing orders.",
+      "states": {
+        "loading": "List skeleton",
+        "empty": "Empty state 'No active orders'",
+        "error": "Error boundary"
+      },
+      "layout": "List view. Each card shows Order ID, Client Name, Metal/Karat, and a visual progress bar or pill showing current stage (e.g., 'Stone Setting'). Subtle borders (0.5pt) to define cards without heavy shadows."
+    },
+    {
+      "name": "Order Detail & Job Card",
+      "purpose": "Complete breakdown of an order, its manufacturing stages, and QR for tracking.",
+      "states": {
+        "loading": "Skeleton UI",
+        "empty": "N/A",
+        "error": "Error boundary"
+      },
+      "layout": "Top section: High-quality product image or placeholder with gradient scrim. Order metadata (Weight, Karat, Client). Middle section: A vertical timeline (stage tracker) from 'Order Received' down to 'Delivered' with checkmarks/active states. Bottom section: QR code for quick floor scanning. Sticky bottom CTA 'Update Stage' or 'Assign Karigar'."
+    },
+    {
+      "name": "Karigar Management",
+      "purpose": "Track artisan performance and material issuance.",
+      "states": {
+        "loading": "List skeleton",
+        "empty": "No assigned tasks",
+        "error": "Error boundary"
+      },
+      "layout": "List of Karigars. Detail view shows 'Gold Issued', 'Gold Returned', and 'Wastage Balance' in clear, side-by-side metric blocks. History of assigned jobs below."
+    },
+    {
+      "name": "Inventory & Notifications",
+      "purpose": "Stock management and system alerts.",
+      "states": {
+        "loading": "Skeleton UI",
+        "empty": "Illustration for 'Stock levels optimal'",
+        "error": "Error boundary"
+      },
+      "layout": "Inventory: List of metals and stones with stock levels. Low stock items highlighted with `warning` or `error` colors softly tinted. Notifications: Simple list with unread indicators."
+    }
+  ],
+  "images": {
+    "login_hero": {
+      "url": "https://images.unsplash.com/photo-1513346940221-6f673d962e97?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdvbGQlMjBsdXh1cnklMjB0ZXh0dXJlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3ODQ1NjQxNzd8MA&ixlib=rb-4.1.0&q=85",
+      "dark": "https://images.unsplash.com/photo-1513346940221-6f673d962e97?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTZ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdvbGQlMjBsdXh1cnklMjB0ZXh0dXJlJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3ODQ1NjQxNzd8MA&ixlib=rb-4.1.0&q=85",
+      "alt": "Abstract gold and black luxury texture background"
+    },
+    "karigar_process": {
+      "url": "https://images.pexels.com/photos/7220829/pexels-photo-7220829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "alt": "Artisan working on jewelry manufacturing"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Adhere STRICTLY to the Dark/Light palette logic provided. The aesthetic is 'Glass / Luxe' in dark mode (deep obsidian with antique gold) and 'Editorial' in light mode (paper white with gold).",
+    "Use 'Cormorant Garamond' for all large numbers, balances, and primary headers to evoke luxury and precision. Use 'Satoshi' for body text, ledgers, and tabular data.",
+    "Ledger-first visualization is key: The Dashboard must feature a prominent, large-type hero section displaying Gold/Silver balance.",
+    "For tabular data (Gold Ledgers, Invoices), use monospaced or right-aligned numeric columns. Rely on spacing and subtle 0.5pt dividers instead of heavy grid lines.",
+    "Order Stage Tracker: Build a vertical timeline component for the 12-stage manufacturing process. Active stages should use the `brandPrimary` color.",
+    "Glassmorphism: Use blur/glass effects on sticky headers, tab bars, and the login modal to create depth. Ensure text readability with tinted underlays.",
+    "Do NOT use pure black (#000000) for surfaces; stick to the `#0A0A0A` and `#151515` tokens provided.",
+    "Ensure all interactive elements (pills, buttons) have a minimum touch target of 44x44pt.",
+    "Ensure there's a gradient scrim underneath text when placed on top of images (e.g., login screen)."
+  ]
+}
