@@ -3,63 +3,79 @@
 <head>
   <title>Goldsmith App</title>
 </head>
+
 <body>
 
-<h2>Login</h2>
+  <h2>Login</h2>
 
-<input id="email" type="email" placeholder="email">
-<input id="password" type="password" placeholder="Password"><br><br>
+  <input id="email" type="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
 
-<button onclick="login()">Login</button>
+  <button onclick="login()">Login</button>
 
-<h2>Orders</h2>
-<button onclick="getOrders()">Get Orders</button>
+  <h2>Orders</h2>
+  <button onclick="getOrders()">Get Orders</button>
 
-<pre id="output"></pre>
+  <pre id="output"></pre>
 
-<script>
-let token = "";
+  <script>
+    let token = "";
 
-async function login() {
-  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/auth/login-json", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+    async function login() {
+      try {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-console.log(email, password);   // 🔍 debug line
+        console.log(email, password); // debug
 
-const res = await fetch("https://goldsmith-backend-yi31.onrender.com/api/auth/login-json", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    email: email,
-    password: password
-  })
-  });
+        const res = await fetch("https://goldsmith-backend-yi31.onrender.com/api/auth/login-json", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        });
 
-  const data = await res.json();
-console.log(data);   // VERY IMPORTANT
+        const data = await res.json();
+        console.log(data);
 
-token = data.access_token || data.token || data.accessToken;
+        token = data.access_token || data.token || data.accessToken;
 
-alert("Login successful!");
+        if (token) {
+          alert("Login successful");
+        } else {
+          alert("Login failed");
+        }
 
-async function getOrders() {
-  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/orders", {
-    headers: {
-      "Authorization": "Bearer " + token
+      } catch (err) {
+        console.error(err);
+        alert("Error during login");
+      }
     }
-  });
 
-  const data = await res.json();
-  document.getElementById("output").innerText = JSON.stringify(data, null, 2);
-}
-</script>
+    async function getOrders() {
+      try {
+        const res = await fetch("https://goldsmith-backend-yi31.onrender.com/api/orders", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        document.getElementById("output").innerText = JSON.stringify(data, null, 2);
+
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching orders");
+      }
+    }
+  </script>
 
 </body>
 </html>
