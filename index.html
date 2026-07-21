@@ -26,10 +26,10 @@ async function login() {
     headers: {
       "Content-Type": "application/json"
     },
-    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
-console.log(username, password);   // 🔍 debug line
+console.log(email, password);   // 🔍 debug line
 
 const res = await fetch("https://goldsmith-backend-yi31.onrender.com/api/auth/login-json", {
   method: "POST",
@@ -37,7 +37,7 @@ const res = await fetch("https://goldsmith-backend-yi31.onrender.com/api/auth/lo
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    email: username,
+    email: email,
     password: password
   })
   });
