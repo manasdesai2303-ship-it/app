@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, FlatList } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, FlatList, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { api } from '@/src/api';
 import { theme, fmtWeight, fmtMoney, fmtDate, KARATS } from '@/src/theme';
+import { shareStatementPdf, sendWhatsAppText } from '@/src/statement';
 
 const TABS = ['Dashboard', 'Orders', 'Gold', 'Silver', 'Diamond', 'Gemstone', 'Cash', 'Invoices'];
 
@@ -20,6 +21,19 @@ export default function ClientDetail() {
   const [gem, setGem] = useState<any[]>([]);
   const [cash, setCash] = useState<any[]>([]);
   const [invoices, setInvoices] = useState<any[]>([]);
+  const [shareOpen, setShareOpen] = useState(false);
+  const [sharing, setSharing] = useState<'pdf' | 'wa' | null>(null);
+
+  const openShare = async (mode: 'pdf' | 'wa') => {
+    if (!id) return;
+    setSharing(mode);
+    try {
+      const st = await api.clientStatement(id);
+      if (mode === 'pdf') await shareStatementPdf(st);
+      else await sendWhatsAppText(st);
+    } catch {}
+    finally { setSharing(null); setShareOpen(false); }
+  };
 
   const load = async () => {
     if (!id) return;
@@ -47,8 +61,52 @@ export default function ClientDetail() {
       <View style={s.header}>
         <Pressable onPress={() => router.back()} testID="client-back-btn"><Ionicons name="chevron-back" size={26} color={theme.dark.onSurface} /></Pressable>
         <Text style={s.headerTitle} numberOfLines={1}>{client.name}</Text>
-        <View style={{ width: 26 }} />
+        <Pressable onPress={() => setShareOpen(true)} testID="client-share-btn" hitSlop={10}>
+          <Ionicons name="share-outline" size={22} color={theme.dark.brand} />
+        </Pressable>
       </View>
+
+      <Modal transparent visible={shareOpen} animationType="fade" onRequestClose={() => setShareOpen(false)}>
+        <Pressable style={s.modalBackdrop} onPress={() => setShareOpen(false)}>
+          <Pressable style={s.sheet} onPress={() => {}} testID="client-share-sheet">
+            <View style={s.sheetHandle} />
+            <Text style={s.sheetTitle}>Share Statement</Text>
+            <Text style={s.sheetSub}>{client.name} · complete Gold + Cash ledger</Text>
+
+            <Pressable
+              style={[s.sheetBtn, sharing === 'wa' && { opacity: 0.6 }]}
+              disabled={sharing !== null}
+              onPress={() => openShare('wa')}
+              testID="share-whatsapp-btn">
+              <View style={[s.sheetIcon, { backgroundColor: 'rgba(37,211,102,0.15)' }]}>
+                <Ionicons name="logo-whatsapp" size={22} color="#25D366" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={s.sheetBtnTitle}>Send via WhatsApp</Text>
+                <Text style={s.sheetBtnSub}>Text summary · opens WhatsApp{client.phone ? ` · ${client.phone}` : ''}</Text>
+              </View>
+            </Pressable>
+
+            <Pressable
+              style={[s.sheetBtn, sharing === 'pdf' && { opacity: 0.6 }]}
+              disabled={sharing !== null}
+              onPress={() => openShare('pdf')}
+              testID="share-pdf-btn">
+              <View style={[s.sheetIcon, { backgroundColor: theme.dark.brandTertiary }]}>
+                <Ionicons name="document-text-outline" size={22} color={theme.dark.brand} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={s.sheetBtnTitle}>Share PDF Statement</Text>
+                <Text style={s.sheetBtnSub}>Branded PDF · share via any app</Text>
+              </View>
+            </Pressable>
+
+            <Pressable style={s.sheetCancel} onPress={() => setShareOpen(false)} testID="share-cancel-btn">
+              <Text style={s.sheetCancelTxt}>Cancel</Text>
+            </Pressable>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <ScrollView>
         <View style={s.profile}>
@@ -245,4 +303,15 @@ const s = StyleSheet.create({
   statusPill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: theme.radius.pill },
   statusTxt: { fontSize: 10, fontWeight: '700', letterSpacing: 1 },
   empty: { color: theme.dark.onSurfaceTertiary, textAlign: 'center', padding: 20 },
+  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.65)', justifyContent: 'flex-end' },
+  sheet: { backgroundColor: theme.dark.surfaceSecondary, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: theme.spacing.xl, paddingBottom: theme.spacing.xxl, borderTopWidth: 1, borderColor: theme.dark.border },
+  sheetHandle: { width: 40, height: 4, borderRadius: 2, backgroundColor: theme.dark.border, alignSelf: 'center', marginBottom: 16 },
+  sheetTitle: { color: theme.dark.onSurface, fontSize: 20, fontFamily: theme.font.display, fontWeight: '600' },
+  sheetSub: { color: theme.dark.onSurfaceSecondary, fontSize: 12, marginTop: 2, marginBottom: 18 },
+  sheetBtn: { flexDirection: 'row', alignItems: 'center', gap: 14, padding: theme.spacing.lg, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.dark.border, backgroundColor: theme.dark.surfaceTertiary, marginBottom: 10 },
+  sheetIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  sheetBtnTitle: { color: theme.dark.onSurface, fontSize: 15, fontWeight: '600' },
+  sheetBtnSub: { color: theme.dark.onSurfaceSecondary, fontSize: 12, marginTop: 2 },
+  sheetCancel: { padding: theme.spacing.md, alignItems: 'center', marginTop: 6 },
+  sheetCancelTxt: { color: theme.dark.onSurfaceSecondary, fontSize: 14, fontWeight: '600' },
 });

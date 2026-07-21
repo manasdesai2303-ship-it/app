@@ -915,6 +915,71 @@ async def dashboard(user: CurrentUser):
     }
 
 
+# ---------- Client Statement ----------
+@api.get("/clients/{cid}/statement")
+async def client_statement(cid: str, user: CurrentUser):
+    c = await db.clients.find_one({"id": cid}, {"_id": 0})
+    if not c:
+        raise HTTPException(404, "Client not found")
+
+    gold = await db.gold_entries.find({"client_id": cid}, {"_id": 0}).sort("created_at", 1).to_list(1000)
+    silver = await db.silver_entries.find({"client_id": cid}, {"_id": 0}).sort("created_at", 1).to_list(1000)
+    diamond = await db.diamond_entries.find({"client_id": cid}, {"_id": 0}).sort("created_at", 1).to_list(1000)
+    cash = await db.cash_entries.find({"client_id": cid}, {"_id": 0}).sort("created_at", 1).to_list(1000)
+    invs = await db.invoices.find({"client_id": cid}, {"_id": 0}).sort("created_at", 1).to_list(1000)
+
+    # Gold balance per karat
+    per_karat: dict = {}
+    total_fine = 0.0
+    for g in gold:
+        k = g.get("karat", "22K")
+        d = per_karat.setdefault(k, {"karat": k, "received": 0.0, "issued": 0.0,
+                                     "returned": 0.0, "wastage": 0.0, "fine": 0.0})
+        d["received"] += g.get("received", 0)
+        d["issued"] += g.get("issued", 0)
+        d["returned"] += g.get("returned", 0)
+        d["wastage"] += g.get("wastage", 0)
+        d["fine"] += g.get("fine_gold", 0)
+        total_fine += g.get("fine_gold", 0)
+    for d in per_karat.values():
+        d["balance"] = round(d["received"] - d["issued"] + d["returned"], 4)
+        for k in ("received", "issued", "returned", "wastage", "fine"):
+            d[k] = round(d[k], 4)
+
+    silver_bal = round(sum(s["received"] - s["issued"] + s["returned"] for s in silver), 4)
+    diamond_bal = round(sum(d["received"] - d["issued"] + d["returned"] for d in diamond), 4)
+
+    total_invoiced = round(sum(i.get("total", 0) for i in invs), 2)
+    total_paid = round(sum(c["amount"] for c in cash if c.get("type") != "invoice"), 2)
+    balance_due = round(sum(i.get("balance", 0) for i in invs), 2)
+
+    # Recent cash rows
+    recent_cash = [{
+        "date": c["created_at"].isoformat() if hasattr(c.get("created_at"), "isoformat") else str(c.get("created_at")),
+        "type": c.get("type"),
+        "amount": c.get("amount"),
+        "method": c.get("method"),
+        "remarks": c.get("remarks", ""),
+    } for c in cash[-20:]]
+
+    return {
+        "client": c,
+        "generated_at": now_utc().isoformat(),
+        "gold": {
+            "per_karat": list(per_karat.values()),
+            "total_fine": round(total_fine, 4),
+        },
+        "silver_balance": silver_bal,
+        "diamond_balance": diamond_bal,
+        "cash": {
+            "total_invoiced": total_invoiced,
+            "total_paid": total_paid,
+            "balance_due": balance_due,
+            "recent": recent_cash,
+        },
+    }
+
+
 # ---------- Notifications ----------
 @api.get("/notifications")
 async def notifications(user: CurrentUser):

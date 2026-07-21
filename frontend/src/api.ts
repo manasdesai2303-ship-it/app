@@ -90,6 +90,8 @@ export const api = {
     request(`/invoices${cid ? `?client_id=${cid}` : ''}`),
   createInvoice: (b: any) => request('/invoices', { method: 'POST', body: JSON.stringify(b) }),
 
+  clientStatement: (id: string) => request(`/clients/${id}/statement`),
+
   inventory: () => request('/inventory'),
   addInventory: (b: any) => request('/inventory', { method: 'POST', body: JSON.stringify(b) }),
 };
