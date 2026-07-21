@@ -3,47 +3,26 @@
 <head>
   <title>Goldsmith App</title>
   <style>
-    body {
-      font-family: Arial;
-      background: #f4f4f4;
-      text-align: center;
-    }
-    header {
-      background: gold;
-      padding: 15px;
-      font-weight: bold;
-    }
-    button {
-      padding: 10px;
-      margin: 10px;
-      background: black;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-    .box {
-      background: white;
-      margin: 20px;
-      padding: 15px;
-      border-radius: 10px;
-    }
+    body { font-family: Arial; text-align: center; background: #f4f4f4; }
+    button { padding: 10px; margin: 10px; }
+    .box { background: white; margin: 20px; padding: 15px; border-radius: 10px; }
   </style>
 </head>
 <body>
 
-<header>Goldsmith App 💰</header>
+<h1>Goldsmith App 💰</h1>
 
 <div class="box">
-  <h2>Get Gold Data</h2>
-  <button onclick="loadData()">Load Data</button>
-  <p id="output"></p>
+  <h2>Clients</h2>
+  <button onclick="loadClients()">Load Clients</button>
+  <pre id="output"></pre>
 </div>
 
 <script>
-async function loadData() {
-  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/YOUR-ENDPOINT");
+async function loadClients() {
+  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/clients");
   const data = await res.json();
-  document.getElementById("output").innerText = JSON.stringify(data);
+  document.getElementById("output").innerText = JSON.stringify(data, null, 2);
 }
 </script>
 
