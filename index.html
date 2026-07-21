@@ -1,58 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Manas Portfolio</title>
+  <title>Goldsmith App</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial;
       background: #f4f4f4;
+      text-align: center;
     }
     header {
-      background: #333;
-      color: white;
+      background: gold;
       padding: 15px;
-      text-align: center;
+      font-weight: bold;
     }
-    section {
-      padding: 20px;
-      text-align: center;
+    button {
+      padding: 10px;
+      margin: 10px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
-    img {
-      border-radius: 10px;
-      margin-top: 10px;
-    }
-    .card {
+    .box {
       background: white;
       margin: 20px;
       padding: 15px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Manas 🚀</h1>
-  <p>My First Portfolio Website</p>
-</header>
+<header>Goldsmith App 💰</header>
 
-<section class="card">
-  <h2>About Me</h2>
-  <p>I am learning web development and building my first website!</p>
-</section>
+<div class="box">
+  <h2>Get Gold Data</h2>
+  <button onclick="loadData()">Load Data</button>
+  <p id="output"></p>
+</div>
 
-<section class="card">
-  <h2>My Work</h2>
-  <img src="https://picsum.photos/300">
-  <p>More projects coming soon...</p>
-</section>
-
-<section class="card">
-  <h2>Contact</h2>
-  <p>Email: your@email.com</p>
-</section>
+<script>
+async function loadData() {
+  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/YOUR-ENDPOINT");
+  const data = await res.json();
+  document.getElementById("output").innerText = JSON.stringify(data);
+}
+</script>
 
 </body>
 </html>
