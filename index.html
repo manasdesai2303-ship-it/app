@@ -38,7 +38,7 @@ console.log(data);   // VERY IMPORTANT
 token = data.access_token || data.token || data.accessToken;
 
 alert("Login successful!");
-
+}
 async function getOrders() {
   const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/orders", {
     headers: {
