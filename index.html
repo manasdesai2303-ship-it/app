@@ -2,25 +2,49 @@
 <html>
 <head>
   <title>Goldsmith App</title>
-  <style>
-    body { font-family: Arial; text-align: center; background: #f4f4f4; }
-    button { padding: 10px; margin: 10px; }
-    .box { background: white; margin: 20px; padding: 15px; border-radius: 10px; }
-  </style>
 </head>
 <body>
 
-<h1>Goldsmith App 💰</h1>
+<h2>Login</h2>
 
-<div class="box">
-  <h2>Clients</h2>
-  <button onclick="loadClients()">Load Clients</button>
-  <pre id="output"></pre>
-</div>
+<input id="username" placeholder="Username"><br><br>
+<input id="password" type="password" placeholder="Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<h2>Orders</h2>
+<button onclick="getOrders()">Get Orders</button>
+
+<pre id="output"></pre>
 
 <script>
-async function loadClients() {
-  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/clients");
+let token = "";
+
+async function login() {
+  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/auth/login-json", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: document.getElementById("username").value,
+      password: document.getElementById("password").value
+    })
+  });
+
+  const data = await res.json();
+  token = data.access_token;
+
+  alert("Login successful!");
+}
+
+async function getOrders() {
+  const res = await fetch("https://goldsmith-backend-yi3l.onrender.com/api/orders", {
+    headers: {
+      "Authorization": "Bearer " + token
+    }
+  });
+
   const data = await res.json();
   document.getElementById("output").innerText = JSON.stringify(data, null, 2);
 }
