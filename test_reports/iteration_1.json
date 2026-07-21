@@ -1,0 +1,42 @@
+{
+  "summary": "First backend testing pass for GoldSmith Pro ERP against public URL https://goldsmith-pro-erp.preview.emergentagent.com. 18/18 pytest cases passed across Auth, Dashboard, Clients (list+filter+create+get), Orders (list, create with custom_purity + base64 design_image, get with client/karigar embedded, advance-stage twice including Delivered transition), Ledgers (gold auto & custom purity, silver, diamond, gemstone, cash), Invoices (subtotal/GST/total math), Inventory (low_stock flag), Notifications, Global Search, and Karigars (enriched work_assigned/work_completed/material_balance). No ObjectId leakage detected; all IDs are string UUIDs.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/notifications", "issue": "Uses ISO parse on expected_delivery inside a broad try/except - malformed dates are silently swallowed. Not blocking."},
+      {"endpoint": "/api/dashboard", "issue": "Revenue chart uses month-only match against last 6 months (30-day step) which can double-count if months repeat and ignores year-only cases. Cosmetic."},
+      {"endpoint": "/api/auth/login (form)", "issue": "OAuth2 form login not directly exercised in this suite (login-json covered). Recommend adding a form-login test in future iteration."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "react_native_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_goldsmith_erp.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Populate /app/memory/test_credentials.md with the seeded Owner credentials so future testing agents don't rely on hardcoded values.",
+    "Consider adding an OAuth2 form-login regression test in later iterations.",
+    "Optional: harden /api/dashboard revenue_chart month bucketing to use (year,month) tuples instead of 30-day steps to avoid month collisions across years."
+  ],
+  "critical_code_review_comments": [
+    "server.py is ~1010 lines - approaching the 700-line soft limit; consider splitting into routers (auth, clients, orders, ledger, invoices, dashboard) for maintainability.",
+    "Client-name enrichment inside /api/orders and /api/invoices does an N+1 query per row; fine for demo scale but should be replaced with a $lookup aggregation for production.",
+    "advance-stage endpoint does not validate stage order (can jump backwards); acceptable if intentional, otherwise add ordinal check.",
+    "@app.on_event('startup') is deprecated in newer FastAPI; migrate to lifespan handlers."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_goldsmith_erp.py (new)",
+    "/app/test_reports/iteration_1.json (new)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "not tested (backend-only request)"},
+  "seed_data_creation": "No new seed data. Tests created a TEST_ClientCo client (cleaned up) and TEST orders/ledger entries against the first seeded client; these persist but are prefixed TEST_ / marked TEST in remarks for easy identification.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Public URL: https://goldsmith-pro-erp.preview.emergentagent.com. Owner login: owner@goldsmith.pro / Owner@12345 (auto-seeded). Frontend env key is EXPO_PUBLIC_BACKEND_URL (not EXPO_BACKEND_URL). Use /api/auth/login-json for JSON login. All models use string UUIDs; MongoDB _id is stripped. Pytest suite at /app/backend/tests/test_goldsmith_erp.py can be reused as regression.",
+  "rca_of_issue": "N/A - no bugs found in this pass."
+}
